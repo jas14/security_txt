@@ -4,8 +4,6 @@ module SecurityTxt
   class Fields
     NOT_PROVIDED = Object.new.freeze
 
-    attr_writer :acknowledgments
-
     def initialize(acknowledgments: nil)
       self.acknowledgments = acknowledgments
     end
@@ -15,13 +13,16 @@ module SecurityTxt
     def acknowledgments(val = NOT_PROVIDED)
       return @acknowledgments if val == NOT_PROVIDED
 
-      # TODO: validate val (must begin with https:// if web address)
+      raise ArgumentError, "acknowledgements must begin with https://" if val && !val.start_with?("https://")
+
       @acknowledgments = val
     end
 
+    alias acknowledgments= acknowledgments
+
     def to_h
       {
-        'Acknowledgments' => acknowledgments,
+        "Acknowledgments" => acknowledgments
       }.compact
     end
 
