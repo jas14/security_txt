@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe SecurityTxt::Fields do
-  subject(:fields) { described_class.new(acknowledgments: acknowledgments) }
+  subject(:fields) do
+    described_class.new(
+      acknowledgments: acknowledgments,
+      canonical: canonical
+    )
+  end
 
-  let(:acknowledgments) { "https://www.example.com/security/thanks" }
-  let(:canonical) { ["https://www.example.com/.well-known/security.txt"] }
+  let(:acknowledgments) { ["https://www.example.com/security/thanks"] }
+  let(:canonical) { ["https://www.example.com/.well-known/security.txt", "https://blah.com/.well-known/security.txt"] }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -32,7 +37,7 @@ RSpec.describe SecurityTxt::Fields do
       expect(hash).to exclude("Acknowledgments")
     end
 
-    it { is_expected.to include("Acknowledgments" => acknowledgments) }
+    it { is_expected.to include("Acknowledgments" => acknowledgments, "Canonical" => canonical) }
   end
 
   describe "#to_s" do
@@ -43,6 +48,15 @@ RSpec.describe SecurityTxt::Fields do
       expect(string).to exclude("Acknowledgments")
     end
 
-    it { is_expected.to include("Acknowledgments: #{acknowledgments}") }
+    it "works" do
+      expect(string).to eq(<<~STR.chomp
+        Acknowledgments: #{acknowledgments[0]}
+
+        Canonical: #{canonical[0]}
+
+        Canonical: #{canonical[1]}
+      STR
+                          )
+    end
   end
 end

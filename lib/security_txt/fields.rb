@@ -9,12 +9,17 @@ module SecurityTxt
       self.canonical = canonical
     end
 
-    # optional String
+    # optional Array<String>
     # URI indicating the Acknowledgments page; see https://www.rfc-editor.org/rfc/rfc9116#name-acknowledgments
     def acknowledgments(val = NOT_PROVIDED)
       return @acknowledgments if val == NOT_PROVIDED
 
-      raise ArgumentError, "acknowledgements must begin with https://" if val && !val.start_with?("https://")
+      if val
+        val = Array(val)
+        unless val.all? { |uri| uri.start_with?("https://") }
+          raise ArgumentError, "acknowledgments must all be HTTPS URIs"
+        end
+      end
 
       @acknowledgments = val
     end
@@ -22,15 +27,13 @@ module SecurityTxt
     alias acknowledgments= acknowledgments
 
     # optional Array<String>
-    # URIs indicating the URIs where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
+    # URIs indicating where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
     def canonical(val = NOT_PROVIDED)
       return @canonical if val == NOT_PROVIDED
 
       if val
         val = Array(val)
-        unless val.all? { |uri| uri.start_with?("https://") }
-          raise ArgumentError, "canonical must be an array of https URIs"
-        end
+        raise ArgumentError, "canonicals must all be HTTPS URIs" unless val.all? { |uri| uri.start_with?("https://") }
       end
 
       @canonical = val
