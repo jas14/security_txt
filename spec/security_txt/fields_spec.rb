@@ -4,12 +4,14 @@ RSpec.describe SecurityTxt::Fields do
   subject(:fields) do
     described_class.new(
       acknowledgments: acknowledgments,
-      canonical: canonical
+      canonical: canonical,
+      contact: contact
     )
   end
 
   let(:acknowledgments) { ["https://www.example.com/security/thanks"] }
   let(:canonical) { ["https://www.example.com/.well-known/security.txt", "https://blah.com/.well-known/security.txt"] }
+  let(:contact) { ["mailto:security@example.com", "tel:+14015551234", "https://example.com/contact"] }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -23,9 +25,13 @@ RSpec.describe SecurityTxt::Fields do
         fields.canonical = ["https://example.com", "http://example.com"]
       end.to raise_error(ArgumentError)
     end
+  end
 
-    it "raises if not provided an array" do
-      expect { fields.canonical = "hi" }.to raise_error(ArgumentError)
+  describe "#contact=" do
+    it "raises if any scheme is invalid" do
+      expect do
+        fields.contact = ["https://example.com", "http://example.com"]
+      end.to raise_error(ArgumentError)
     end
   end
 
@@ -55,6 +61,12 @@ RSpec.describe SecurityTxt::Fields do
         Canonical: #{canonical[0]}
 
         Canonical: #{canonical[1]}
+
+        Contact: #{contact[0]}
+
+        Contact: #{contact[1]}
+
+        Contact: #{contact[2]}
       STR
                           )
     end

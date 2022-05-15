@@ -2,11 +2,13 @@
 
 module SecurityTxt
   class Fields
+    CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
 
-    def initialize(acknowledgments: nil, canonical: nil)
+    def initialize(acknowledgments: nil, canonical: nil, contact: nil)
       self.acknowledgments = acknowledgments
       self.canonical = canonical
+      self.contact = contact
     end
 
     # optional Array<String>
@@ -41,10 +43,28 @@ module SecurityTxt
 
     alias canonical= canonical
 
+    # optional Array<String>
+    # URIs indicating where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
+    def contact(val = NOT_PROVIDED)
+      return @contact if val == NOT_PROVIDED
+
+      if val
+        val = Array(val)
+        unless val.all? { |uri| CONTACT_PREFIXES.any? { |prefix| uri.start_with?(prefix) } }
+          raise ArgumentError, "contacts must all be mailto, tel, or HTTPS URIs"
+        end
+      end
+
+      @contact = val
+    end
+
+    alias contact= contact
+
     def to_h
       {
         "Acknowledgments" => acknowledgments,
         "Canonical" => canonical,
+        "Contact" => contact,
       }.compact
     end
 
