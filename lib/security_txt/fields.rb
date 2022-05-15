@@ -129,7 +129,7 @@ module SecurityTxt
         "Canonical" => canonical,
         "Contact" => contact,
         "Encryption" => encryption,
-        "Expires" => expires.iso8601,
+        "Expires" => expires&.iso8601,
         "Hiring" => hiring,
         "Preferred-Languages" => preferred_languages&.join(", "),
       }.compact
