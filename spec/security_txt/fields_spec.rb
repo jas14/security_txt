@@ -63,6 +63,28 @@ RSpec.describe SecurityTxt::Fields do
     end
   end
 
+  describe "#valid?" do
+    subject(:valid?) { fields.valid? }
+
+    context "when Expires is unset" do
+      let(:expires) { nil }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when Contact is empty" do
+      let(:contact) { [] }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when Contact is unset" do
+      let(:contact) { nil }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe "#to_h" do
     subject(:hash) { fields.to_h }
 

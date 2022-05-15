@@ -88,7 +88,7 @@ module SecurityTxt
 
       if val.is_a?(String)
         val = Time.iso8601(val)
-      elsif !val.respond_to?(:iso8601)
+      elsif !val.respond_to?(:iso8601) && !val.nil?
         raise ArgumentError, "expires must be a String or respond to #iso8601"
       end
 
@@ -96,6 +96,10 @@ module SecurityTxt
     end
 
     alias expires= expires
+
+    def valid?
+      !expires.nil? && contact.is_a?(Array) && !contact.empty?
+    end
 
     def to_h
       {
