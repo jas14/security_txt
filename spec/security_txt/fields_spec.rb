@@ -10,7 +10,8 @@ RSpec.describe SecurityTxt::Fields do
       contact: contact,
       encryption: encryption,
       expires: expires,
-      hiring: hiring
+      hiring: hiring,
+      preferred_languages: preferred_languages
     )
   end
 
@@ -20,6 +21,7 @@ RSpec.describe SecurityTxt::Fields do
   let(:encryption) { ["https://www.example.com/pgpkey", "dns:blerp._openpgpkey.example.com"] }
   let(:expires) { Time.now + (60 * 60 * 24 * 5) }
   let(:hiring) { ["https://www.example.com/jobs"] }
+  let(:preferred_languages) { [:en, "es-AR"] }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -142,6 +144,8 @@ RSpec.describe SecurityTxt::Fields do
         Expires: #{expires.iso8601}
 
         Hiring: #{hiring[0]}
+
+        Preferred-Languages: en, es-AR
       STR
                           )
     end

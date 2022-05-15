@@ -7,14 +7,18 @@ module SecurityTxt
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
 
-    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil, expires: nil, hiring: nil)
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil, expires: nil,
+                   hiring: nil, preferred_languages: nil)
       self.acknowledgments = acknowledgments
       self.canonical = canonical
       self.contact = contact
       self.encryption = encryption
       self.expires = expires
       self.hiring = hiring
+      self.preferred_languages = preferred_languages
     end
+    # rubocop:enable Metrics/ParameterLists
 
     # optional Array<String>
     # URI indicating the Acknowledgments page; see https://www.rfc-editor.org/rfc/rfc9116#name-acknowledgments
@@ -107,6 +111,14 @@ module SecurityTxt
 
     alias hiring= hiring
 
+    def preferred_languages(val = NOT_PROVIDED)
+      return @preferred_languages if val == NOT_PROVIDED
+
+      @preferred_languages = Array(val)
+    end
+
+    alias preferred_languages= preferred_languages
+
     def valid?
       !expires.nil? && contact.is_a?(Array) && !contact.empty?
     end
@@ -119,6 +131,7 @@ module SecurityTxt
         "Encryption" => encryption,
         "Expires" => expires.iso8601,
         "Hiring" => hiring,
+        "Preferred-Languages" => preferred_languages&.join(", "),
       }.compact
     end
 
