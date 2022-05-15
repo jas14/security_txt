@@ -109,8 +109,8 @@ RSpec.describe SecurityTxt::Fields do
       expect(hash).to exclude("Acknowledgments")
     end
 
-    it do
-      is_expected.to include(
+    it "works" do
+      expect(hash).to include(
         "Acknowledgments" => acknowledgments,
         "Canonical" => canonical,
         "Contact" => contact,
@@ -130,7 +130,7 @@ RSpec.describe SecurityTxt::Fields do
       expect(string).to exclude("Acknowledgments")
     end
 
-    it "works" do
+    it "works" do # rubocop:disable RSpec/ExampleLength
       expect(string).to eq(<<~STR.chomp
         Acknowledgments: #{acknowledgments[0]}
 

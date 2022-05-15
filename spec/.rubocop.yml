@@ -2,3 +2,12 @@ inherit_from: ../.rubocop.yml
 
 Metrics/BlockLength:
   Max: 150
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/MultipleExpectations:
+  Max: 3
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
