@@ -70,8 +70,12 @@ RSpec.describe SecurityTxt::Fields do
   describe "#hiring=" do
     it "raises if any scheme is invalid" do
       expect do
-        fields.encryption = ["https://example.com", "http://example.com"]
+        fields.hiring = ["https://example.com", "http://example.com"]
       end.to raise_error(ArgumentError)
+    end
+
+    it "allows nil" do
+      expect { fields.hiring = nil }.not_to raise_error
     end
   end
 

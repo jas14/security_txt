@@ -104,7 +104,7 @@ module SecurityTxt
     def hiring(val = NOT_PROVIDED)
       return @hiring if val == NOT_PROVIDED
 
-      raise ArgumentError, "hirings must not use plain HTTP schemes" if val.any? { |uri| uri.start_with?("http://") }
+      raise ArgumentError, "hirings must not use plain HTTP schemes" if val&.any? { |uri| uri.start_with?("http://") }
 
       @hiring = val
     end
