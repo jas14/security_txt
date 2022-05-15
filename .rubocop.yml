@@ -5,6 +5,7 @@ AllCops:
   NewCops: enable
   Exclude:
     - bin/**
+    - vendor/**/*
   SuggestExtensions: false
 
 Style/StringLiterals:
