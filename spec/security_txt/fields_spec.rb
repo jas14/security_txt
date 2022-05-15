@@ -128,17 +128,13 @@ RSpec.describe SecurityTxt::Fields do
         Acknowledgments: #{acknowledgments[0]}
 
         Canonical: #{canonical[0]}
-
         Canonical: #{canonical[1]}
 
         Contact: #{contact[0]}
-
         Contact: #{contact[1]}
-
         Contact: #{contact[2]}
 
         Encryption: #{encryption[0]}
-
         Encryption: #{encryption[1]}
 
         Expires: #{expires.iso8601}

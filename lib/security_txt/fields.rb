@@ -138,7 +138,7 @@ module SecurityTxt
     def to_s
       to_h.compact.flat_map do |field_name, field_value|
         field_values = Array(field_value)
-        field_values.map { |v| "#{field_name}: #{v}" }
+        field_values.map { |v| "#{field_name}: #{v}" }.join("\n")
       end.join("\n\n")
     end
   end
