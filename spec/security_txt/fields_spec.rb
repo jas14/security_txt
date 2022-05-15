@@ -9,7 +9,8 @@ RSpec.describe SecurityTxt::Fields do
       canonical: canonical,
       contact: contact,
       encryption: encryption,
-      expires: expires
+      expires: expires,
+      hiring: hiring
     )
   end
 
@@ -18,6 +19,7 @@ RSpec.describe SecurityTxt::Fields do
   let(:contact) { ["mailto:security@example.com", "tel:+14015551234", "https://example.com/contact"] }
   let(:encryption) { ["https://www.example.com/pgpkey", "dns:blerp._openpgpkey.example.com"] }
   let(:expires) { Time.now + (60 * 60 * 24 * 5) }
+  let(:hiring) { ["https://www.example.com/jobs"] }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -60,6 +62,14 @@ RSpec.describe SecurityTxt::Fields do
 
     it "accepts Time objects" do
       expect { fields.expires = Time.now }.not_to raise_error
+    end
+  end
+
+  describe "#hiring=" do
+    it "raises if any scheme is invalid" do
+      expect do
+        fields.encryption = ["https://example.com", "http://example.com"]
+      end.to raise_error(ArgumentError)
     end
   end
 
@@ -130,6 +140,8 @@ RSpec.describe SecurityTxt::Fields do
         Encryption: #{encryption[1]}
 
         Expires: #{expires.iso8601}
+
+        Hiring: #{hiring[0]}
       STR
                           )
     end

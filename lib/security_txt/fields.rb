@@ -6,14 +6,14 @@ module SecurityTxt
   class Fields
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
-    ISO8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/i
 
-    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil, expires: nil)
+    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil, expires: nil, hiring: nil)
       self.acknowledgments = acknowledgments
       self.canonical = canonical
       self.contact = contact
       self.encryption = encryption
       self.expires = expires
+      self.hiring = hiring
     end
 
     # optional Array<String>
@@ -97,6 +97,16 @@ module SecurityTxt
 
     alias expires= expires
 
+    def hiring(val = NOT_PROVIDED)
+      return @hiring if val == NOT_PROVIDED
+
+      raise ArgumentError, "hirings must not use plain HTTP schemes" if val.any? { |uri| uri.start_with?("http://") }
+
+      @hiring = val
+    end
+
+    alias hiring= hiring
+
     def valid?
       !expires.nil? && contact.is_a?(Array) && !contact.empty?
     end
@@ -108,6 +118,7 @@ module SecurityTxt
         "Contact" => contact,
         "Encryption" => encryption,
         "Expires" => expires.iso8601,
+        "Hiring" => hiring,
       }.compact
     end
 
