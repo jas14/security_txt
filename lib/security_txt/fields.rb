@@ -114,7 +114,7 @@ module SecurityTxt
     def preferred_languages(val = NOT_PROVIDED)
       return @preferred_languages if val == NOT_PROVIDED
 
-      @preferred_languages = Array(val)
+      @preferred_languages = Array(val) if val
     end
 
     alias preferred_languages= preferred_languages

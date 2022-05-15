@@ -114,7 +114,10 @@ RSpec.describe SecurityTxt::Fields do
         "Acknowledgments" => acknowledgments,
         "Canonical" => canonical,
         "Contact" => contact,
-        "Encryption" => encryption
+        "Encryption" => encryption,
+        "Expires" => expires.iso8601,
+        "Hiring" => hiring,
+        "Preferred-Languages" => preferred_languages.join(", ")
       )
     end
   end
@@ -148,6 +151,14 @@ RSpec.describe SecurityTxt::Fields do
         Preferred-Languages: en, es-AR
       STR
                           )
+    end
+
+    context "with a blank config" do
+      let(:fields) { described_class.new }
+
+      it "is blank" do
+        expect(string).to eq("")
+      end
     end
   end
 end
