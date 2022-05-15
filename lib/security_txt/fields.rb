@@ -52,7 +52,7 @@ module SecurityTxt
 
     alias canonical= canonical
 
-    # optional Array<String>
+    # required Array<String>
     # URIs indicating where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
     def contact(val = NOT_PROVIDED)
       return @contact if val == NOT_PROVIDED
@@ -70,7 +70,7 @@ module SecurityTxt
     alias contact= contact
 
     # optional Array<String>
-    # URI pointing to location where PGP encryption key is located; see https://www.rfc-editor.org/rfc/rfc9116.html#name-encryption
+    # URI(s) pointing to location where PGP encryption key is located; see https://www.rfc-editor.org/rfc/rfc9116.html#name-encryption
     def encryption(val = NOT_PROVIDED)
       return @encryption if val == NOT_PROVIDED
 
@@ -87,6 +87,9 @@ module SecurityTxt
 
     alias encryption= encryption
 
+    # required String|#iso8601
+    # ISO8601 string or Object responding to #iso8601 indicating the date and time after which this security.txt data should not be used;
+    # see https://www.rfc-editor.org/rfc/rfc9116.html#name-expires
     def expires(val = NOT_PROVIDED)
       return @expires if val == NOT_PROVIDED
 
@@ -101,16 +104,20 @@ module SecurityTxt
 
     alias expires= expires
 
+    # optional Array<String>
+    # URI(s) pointing to information about security-related job positions; see https://www.rfc-editor.org/rfc/rfc9116.html#name-hiring
     def hiring(val = NOT_PROVIDED)
       return @hiring if val == NOT_PROVIDED
 
       raise ArgumentError, "hirings must not use plain HTTP schemes" if val&.any? { |uri| uri.start_with?("http://") }
 
-      @hiring = val
+      @hiring = Array(val) if val
     end
 
     alias hiring= hiring
 
+    # optional Array<String>
+    # Locale code(s) indicating the preferred natural language(s) for security reports; see https://www.rfc-editor.org/rfc/rfc9116.html#name-preferred-languages
     def preferred_languages(val = NOT_PROVIDED)
       return @preferred_languages if val == NOT_PROVIDED
 
