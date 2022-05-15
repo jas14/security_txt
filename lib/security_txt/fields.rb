@@ -88,8 +88,8 @@ module SecurityTxt
     alias encryption= encryption
 
     # required String|#iso8601
-    # ISO8601 string or Object responding to #iso8601 indicating the date and time after which this security.txt data should not be used;
-    # see https://www.rfc-editor.org/rfc/rfc9116.html#name-expires
+    # ISO8601 string or Object responding to #iso8601 indicating the date and time after which this security.txt data
+    # should not be used; see https://www.rfc-editor.org/rfc/rfc9116.html#name-expires
     def expires(val = NOT_PROVIDED)
       return @expires if val == NOT_PROVIDED
 
