@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
+require "time"
+
 module SecurityTxt
   class Fields
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
+    ISO8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/i
 
-    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil)
+    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil, expires: nil)
       self.acknowledgments = acknowledgments
       self.canonical = canonical
       self.contact = contact
       self.encryption = encryption
+      self.expires = expires
     end
 
     # optional Array<String>
@@ -79,12 +83,27 @@ module SecurityTxt
 
     alias encryption= encryption
 
+    def expires(val = NOT_PROVIDED)
+      return @expires if val == NOT_PROVIDED
+
+      if val.is_a?(String)
+        val = Time.iso8601(val)
+      elsif !val.respond_to?(:iso8601)
+        raise ArgumentError, "expires must be a String or respond to #iso8601"
+      end
+
+      @expires = val
+    end
+
+    alias expires= expires
+
     def to_h
       {
         "Acknowledgments" => acknowledgments,
         "Canonical" => canonical,
         "Contact" => contact,
         "Encryption" => encryption,
+        "Expires" => expires.iso8601,
       }.compact
     end
 

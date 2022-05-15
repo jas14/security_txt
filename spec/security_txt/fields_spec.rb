@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
+require "time"
+
 RSpec.describe SecurityTxt::Fields do
   subject(:fields) do
     described_class.new(
       acknowledgments: acknowledgments,
       canonical: canonical,
       contact: contact,
-      encryption: encryption
+      encryption: encryption,
+      expires: expires
     )
   end
 
@@ -14,6 +17,7 @@ RSpec.describe SecurityTxt::Fields do
   let(:canonical) { ["https://www.example.com/.well-known/security.txt", "https://blah.com/.well-known/security.txt"] }
   let(:contact) { ["mailto:security@example.com", "tel:+14015551234", "https://example.com/contact"] }
   let(:encryption) { ["https://www.example.com/pgpkey", "dns:blerp._openpgpkey.example.com"] }
+  let(:expires) { Time.now + (60 * 60 * 24 * 5) }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -42,6 +46,20 @@ RSpec.describe SecurityTxt::Fields do
       expect do
         fields.encryption = ["https://example.com", "http://example.com"]
       end.to raise_error(ArgumentError)
+    end
+  end
+
+  describe "#expires=" do
+    it "raises if invalid" do
+      expect { fields.expires = "blah" }.to raise_error(ArgumentError)
+    end
+
+    it "accepts ISO8601 strings" do
+      expect { fields.expires = "2022-01-01T12:34:56.0123Z" }.not_to raise_error
+    end
+
+    it "accepts Time objects" do
+      expect { fields.expires = Time.now }.not_to raise_error
     end
   end
 
@@ -88,6 +106,8 @@ RSpec.describe SecurityTxt::Fields do
         Encryption: #{encryption[0]}
 
         Encryption: #{encryption[1]}
+
+        Expires: #{expires.iso8601}
       STR
                           )
     end
