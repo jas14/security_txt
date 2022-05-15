@@ -3,6 +3,7 @@
 require_relative "fields"
 
 module SecurityTxt
+  # Thin interface for SecurityTxt::Fields.
   class Config
     # Get or set security.txt fields.
     # If not given a block, returns Fields:

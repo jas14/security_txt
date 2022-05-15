@@ -3,6 +3,8 @@
 require "time"
 
 module SecurityTxt
+  # Object representing all security.txt fields.
+  # Provides getters, setters with limited validation, and string generation.
   class Fields
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
