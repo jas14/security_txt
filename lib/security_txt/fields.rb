@@ -5,10 +5,11 @@ module SecurityTxt
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
 
-    def initialize(acknowledgments: nil, canonical: nil, contact: nil)
+    def initialize(acknowledgments: nil, canonical: nil, contact: nil, encryption: nil)
       self.acknowledgments = acknowledgments
       self.canonical = canonical
       self.contact = contact
+      self.encryption = encryption
     end
 
     # optional Array<String>
@@ -60,11 +61,30 @@ module SecurityTxt
 
     alias contact= contact
 
+    # optional Array<String>
+    # URI pointing to location where PGP encryption key is located; see https://www.rfc-editor.org/rfc/rfc9116.html#name-encryption
+    def encryption(val = NOT_PROVIDED)
+      return @encryption if val == NOT_PROVIDED
+
+      if val
+        val = Array(val)
+
+        if val.any? { |uri| uri.start_with?("http://") }
+          raise ArgumentError, "encryptions must not use plain HTTP schemes"
+        end
+      end
+
+      @encryption = val
+    end
+
+    alias encryption= encryption
+
     def to_h
       {
         "Acknowledgments" => acknowledgments,
         "Canonical" => canonical,
         "Contact" => contact,
+        "Encryption" => encryption,
       }.compact
     end
 

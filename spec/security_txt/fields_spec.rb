@@ -5,13 +5,15 @@ RSpec.describe SecurityTxt::Fields do
     described_class.new(
       acknowledgments: acknowledgments,
       canonical: canonical,
-      contact: contact
+      contact: contact,
+      encryption: encryption
     )
   end
 
   let(:acknowledgments) { ["https://www.example.com/security/thanks"] }
   let(:canonical) { ["https://www.example.com/.well-known/security.txt", "https://blah.com/.well-known/security.txt"] }
   let(:contact) { ["mailto:security@example.com", "tel:+14015551234", "https://example.com/contact"] }
+  let(:encryption) { ["https://www.example.com/pgpkey", "dns:blerp._openpgpkey.example.com"] }
 
   describe "#acknowledgments=" do
     it "raises if the scheme is invalid" do
@@ -35,6 +37,14 @@ RSpec.describe SecurityTxt::Fields do
     end
   end
 
+  describe "#encryption=" do
+    it "raises if any scheme is invalid" do
+      expect do
+        fields.encryption = ["https://example.com", "http://example.com"]
+      end.to raise_error(ArgumentError)
+    end
+  end
+
   describe "#to_h" do
     subject(:hash) { fields.to_h }
 
@@ -43,7 +53,14 @@ RSpec.describe SecurityTxt::Fields do
       expect(hash).to exclude("Acknowledgments")
     end
 
-    it { is_expected.to include("Acknowledgments" => acknowledgments, "Canonical" => canonical) }
+    it do
+      is_expected.to include(
+        "Acknowledgments" => acknowledgments,
+        "Canonical" => canonical,
+        "Contact" => contact,
+        "Encryption" => encryption
+      )
+    end
   end
 
   describe "#to_s" do
@@ -67,6 +84,10 @@ RSpec.describe SecurityTxt::Fields do
         Contact: #{contact[1]}
 
         Contact: #{contact[2]}
+
+        Encryption: #{encryption[0]}
+
+        Encryption: #{encryption[1]}
       STR
                           )
     end
