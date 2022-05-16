@@ -70,7 +70,13 @@ my_config.fields.preferred_languages ['en', 'es-AR']
 
 ### Accessing raw field values
 
-`#to_h` is defined on `SecurityTxt::Fields` if you want to access the values as a hash.
+Call the relevant setter with no arguments to get the field value:
+
+```ruby
+my_config.fields.preferred_languages # => ['en', 'es-AR']
+```
+
+`#to_h` is also defined on `SecurityTxt::Fields` if you want to access all the set values as a hash.
 
 ### Converting to string
 
