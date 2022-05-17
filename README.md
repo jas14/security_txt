@@ -60,6 +60,15 @@ my_fields.configure do
 end
 ```
 
+#### Set fields on construction
+```ruby
+my_fields = SecurityTxt::Fields.new(
+  acknowledgments: ["https://www.example.com/thanks"],
+  canonical: ["https://www.example.com/.well-known/security.txt"],
+  expires: "2023-01-01T00:00:00Z"
+)
+```
+
 ### Flexible values
 
 Fields admitting multiple values can be set to an array or a singleton. The output will automatically be prope
