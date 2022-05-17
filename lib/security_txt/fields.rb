@@ -22,8 +22,9 @@ module SecurityTxt
     end
     # rubocop:enable Metrics/ParameterLists
 
-    # Get or set security.txt fields.
-    # If not given a block, returns self:
+    # Get or set security.txt fields. Always returns `self`.
+    #
+    # If not given a block, just returns self:
     #
     #   SecurityTxt::Fields.new.configure # => #<SecurityTxt::Fields:...>
     #
