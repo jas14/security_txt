@@ -5,7 +5,7 @@ require "time"
 module SecurityTxt
   # Object representing all security.txt fields.
   # Provides getters, setters with limited validation, and string generation.
-  class Fields
+  class Fields # rubocop:disable Metrics/ClassLength
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
 
@@ -21,6 +21,38 @@ module SecurityTxt
       self.preferred_languages = preferred_languages
     end
     # rubocop:enable Metrics/ParameterLists
+
+    # Get or set security.txt fields.
+    # If not given a block, returns self:
+    #
+    #   SecurityTxt::Fields.new.configure # => #<SecurityTxt::Fields:...>
+    #
+    # If given a block with no parameters, evaluates the block on the Fields instance:
+    #
+    #   SecurityTxt::Fields.new.configure do
+    #     acknowledgments "https://www.example.com/thanks"
+    #     canonical       "https://www.example.com/.well-known/security.txt"
+    #   end
+    #
+    # If given a block with 1 or more parameters, yields Fields to the block:
+    #
+    #   SecurityTxt::Fields.new.configure do |fields|
+    #     fields.acknowledgments = "https://www.example.com/thanks"
+    #     fields.canonical       = "https://www.example.com/.well-known/security.txt"
+    #   end
+    def configure(&block)
+      block_params = block&.parameters
+
+      unless block_params.nil?
+        if block_params.empty?
+          instance_eval(&block)
+        else
+          block.call self
+        end
+      end
+
+      self
+    end
 
     # optional Array<String>
     # URI indicating the Acknowledgments page; see https://www.rfc-editor.org/rfc/rfc9116#name-acknowledgments

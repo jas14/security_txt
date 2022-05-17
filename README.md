@@ -20,39 +20,39 @@ Or install it yourself as:
 
 ## Usage
 
-Usage revolves around the `SecurityTxt::Config` object, which provides a thin layer around the `Security::Fields` data object.
+Usage revolves around the `SecurityTxt::Fields` object, which represents the collection of fields and values making up a security.txt file.
 
-First, set up a security.txt config object:
+First, set up this object:
 ```ruby
 require 'security_txt'
 
-my_config = SecurityTxt::Config.new
+my_fields = SecurityTxt::Fields.new
 ```
 
 Then, you can get or set individual field values in several different ways:
 
-#### Get fields
+#### Get individual fields
 ```ruby
-my_config.fields # => #<SecurityTxt::Config...>
+my_fields.acknowledgments # => ["https://www.example.com/thanks"]
 ```
 
 #### Set individual fields
 ```ruby
 # You can use the setter via two aliases:
-my_config.fields.acknowledgments = ["https://www.example.com/thanks"]
-my_config.fields.acknowledgments ["https://www.example.com/thanks"]
+my_fields.acknowledgments = ["https://www.example.com/thanks"]
+my_fields.acknowledgments ["https://www.example.com/thanks"]
 ```
 
 #### Set fields with a block
 ```ruby
-my_config.fields do |fields|
+my_fields.configure do |fields|
   fields.acknowledgments = ["https://www.example.com/thanks"]
 end
 ```
 
 #### Set fields DSL-style
 ```ruby
-my_config.fields do
+my_fields.configure do
   acknowledgments ["https://www.example.com/thanks"]
 end
 ```
@@ -63,9 +63,9 @@ Fields admitting multiple values can be set to an array or a singleton. The outp
 Any optional fields that admit multiple values (acknowledgments, canonical, etc) can be set either as an array or as a single value which will be converted to an array:
 
 ```ruby
-my_config.fields.preferred_languages 'en'
-my_config.fields.preferred_languages ['en']
-my_config.fields.preferred_languages ['en', 'es-AR']
+my_fields.preferred_languages 'en'
+my_fields.preferred_languages ['en']
+my_fields.preferred_languages ['en', 'es-AR']
 ```
 
 ### Accessing raw field values
@@ -73,7 +73,7 @@ my_config.fields.preferred_languages ['en', 'es-AR']
 Call the relevant setter with no arguments to get the field value:
 
 ```ruby
-my_config.fields.preferred_languages # => ['en', 'es-AR']
+my_fields.preferred_languages # => ['en', 'es-AR']
 ```
 
 `#to_h` is also defined on `SecurityTxt::Fields` if you want to access all the set values as a hash.
@@ -83,7 +83,7 @@ my_config.fields.preferred_languages # => ['en', 'es-AR']
 When you've configured your security.txt object to your liking, simply call `#to_s` on the `SecurityTxt::Fields` object to convert to a properly formatted string. Optional fields you haven't specified will not be included in the output. Fields will be converted to the expected format (see `Preferred-Languages` example below).
 
 ```ruby
-my_config.to_s # =>
+my_fields.to_s # =>
 # Acknowledgments: https://www.example.com/thanks1
 # Acknowledgments: https://www.example.com/thanks2
 #
