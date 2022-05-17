@@ -1,4 +1,4 @@
-name: Ruby
+name: Tests & Lint
 
 on:
   push:

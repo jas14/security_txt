@@ -1,5 +1,8 @@
 # SecurityTxt
 
+![Tests & Lints](https://github.com/jas14/security_txt/actions/workflows/main.yml/badge.svg)
+
+
 This gem aims to provide a flexible Ruby interface to configure and generate an unsigned security.txt file, per [RFC 9116](https://www.rfc-editor.org/rfc/rfc9116.html). It includes some basic validations for certain field values.
 
 ## Installation
