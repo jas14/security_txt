@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require "time"
+require_relative "configurable"
 
 module SecurityTxt
   # Object representing all security.txt fields.
   # Provides getters, setters with limited validation, and string generation.
-  class Fields # rubocop:disable Metrics/ClassLength
+  class Fields
+    extend Configurable
+
     CONTACT_PREFIXES = ["https://", "mailto:", "tel:"].freeze
     NOT_PROVIDED = Object.new.freeze
 
@@ -57,9 +60,7 @@ module SecurityTxt
 
     # optional Array<String>
     # URI indicating the Acknowledgments page; see https://www.rfc-editor.org/rfc/rfc9116#name-acknowledgments
-    def acknowledgments(val = NOT_PROVIDED)
-      return @acknowledgments if val == NOT_PROVIDED
-
+    field :acknowledgments do |val|
       if val
         val = Array(val)
         unless val.all? { |uri| uri.start_with?("https://") }
@@ -67,31 +68,23 @@ module SecurityTxt
         end
       end
 
-      @acknowledgments = val
+      val
     end
-
-    alias acknowledgments= acknowledgments
 
     # optional Array<String>
     # URIs indicating where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
-    def canonical(val = NOT_PROVIDED)
-      return @canonical if val == NOT_PROVIDED
-
+    field :canonical do |val|
       if val
         val = Array(val)
         raise ArgumentError, "canonicals must all be HTTPS URIs" unless val.all? { |uri| uri.start_with?("https://") }
       end
 
-      @canonical = val
+      val
     end
-
-    alias canonical= canonical
 
     # required Array<String>
     # URIs indicating where security.txt is located; see https://www.rfc-editor.org/rfc/rfc9116#name-canonical
-    def contact(val = NOT_PROVIDED)
-      return @contact if val == NOT_PROVIDED
-
+    field :contact do |val|
       if val
         val = Array(val)
         unless val.all? { |uri| CONTACT_PREFIXES.any? { |prefix| uri.start_with?(prefix) } }
@@ -99,16 +92,12 @@ module SecurityTxt
         end
       end
 
-      @contact = val
+      val
     end
-
-    alias contact= contact
 
     # optional Array<String>
     # URI(s) pointing to location where PGP encryption key is located; see https://www.rfc-editor.org/rfc/rfc9116.html#name-encryption
-    def encryption(val = NOT_PROVIDED)
-      return @encryption if val == NOT_PROVIDED
-
+    field :encryption do |val|
       if val
         val = Array(val)
 
@@ -117,49 +106,35 @@ module SecurityTxt
         end
       end
 
-      @encryption = val
+      val
     end
-
-    alias encryption= encryption
 
     # required String|#iso8601
     # ISO8601 string or Object responding to #iso8601 indicating the date and time after which this security.txt data
     # should not be used; see https://www.rfc-editor.org/rfc/rfc9116.html#name-expires
-    def expires(val = NOT_PROVIDED)
-      return @expires if val == NOT_PROVIDED
-
+    field :expires do |val|
       if val.is_a?(String)
         val = Time.iso8601(val)
       elsif !val.respond_to?(:iso8601) && !val.nil?
         raise ArgumentError, "expires must be a String or respond to #iso8601"
       end
 
-      @expires = val
+      val
     end
-
-    alias expires= expires
 
     # optional Array<String>
     # URI(s) pointing to information about security-related job positions; see https://www.rfc-editor.org/rfc/rfc9116.html#name-hiring
-    def hiring(val = NOT_PROVIDED)
-      return @hiring if val == NOT_PROVIDED
-
+    field :hiring do |val|
       raise ArgumentError, "hirings must not use plain HTTP schemes" if val&.any? { |uri| uri.start_with?("http://") }
 
-      @hiring = Array(val) if val
+      val
     end
-
-    alias hiring= hiring
 
     # optional Array<String>
     # Locale code(s) indicating the preferred natural language(s) for security reports; see https://www.rfc-editor.org/rfc/rfc9116.html#name-preferred-languages
-    def preferred_languages(val = NOT_PROVIDED)
-      return @preferred_languages if val == NOT_PROVIDED
-
-      @preferred_languages = Array(val) if val
+    field :preferred_languages do |val|
+      Array(val) if val
     end
-
-    alias preferred_languages= preferred_languages
 
     def valid?
       !expires.nil? && contact.is_a?(Array) && !contact.empty?
